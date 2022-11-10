@@ -3,11 +3,17 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import { ethers } from "ethers";
 import abi from "./utils/abi.json";
+import icons from "./assets/icons.jpeg";
 import { Box, Button, CircularProgress, Modal, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import "./App.css";
+import video from "./assets/video.mp4";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter, faEthereum } from "@fortawesome/free-brands-svg-icons";
 
 import CancelIcon from "@mui/icons-material/Cancel";
+import Footer from "./components/Footer";
+import { fontSize, fontWeight } from "@mui/system";
 const style = {
   position: "absolute",
   top: "50%",
@@ -27,7 +33,7 @@ const style = {
 
 function App() {
   const [CurrentAccount, setCurrentAccount] = useState("");
-  const CONTRACT_ADDRESS = "0x4Ee2ef0bd96cff4Fdfe4d182794C82257b60CCD9";
+  const CONTRACT_ADDRESS = "0x100c5af0e97be44B5bc247D2c12c727340695827";
   const [loading, setloading] = useState(false);
   const [success, setsuccess] = useState(false);
   const [noOfMint, setnoOfMint] = useState(0);
@@ -101,10 +107,16 @@ function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
+        const priceContract = new ethers.Contract(CONTRACT_ADDRESS, abi, provider);
+        const priceHex = await priceContract.getPrice(CurrentAccount);
+
+        console.log(priceHex[0].toString());
+        const price = priceHex[0].toString() * noOfMint;
         const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
 
         let nftTxn = await connectedContract.mint(noOfMint, {
-          value: ethers.utils.parseUnits("0.01", "ether"),
+          gasLimit: 100000,
+          value: price.toString(),
         });
 
         await nftTxn.wait();
@@ -136,6 +148,9 @@ function App() {
 
   return (
     <div className="App">
+      <video id="background-video" loop muted autoPlay>
+        <source src={video} type="video/mp4" />
+      </video>
       <div className="wrapper"></div>
       <div className="container">
         <Navbar
@@ -153,6 +168,46 @@ function App() {
           setnoOfMint={setnoOfMint}
           askContractToMintNft={askContractToMintNft}
         />
+        <footer class="footer pt-8 pb-6  p-6 ">
+         
+            <div class="flex-auto flex-wrap text-center lg:text-center">
+              <div class="w-full  px-4 flex-auto">
+                
+                <div class="mt-6 lg:mb-0 mb-6">
+                  <a
+                    class=" text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-4"
+                    href="https://twitter.com/bbanft"
+                  >
+                    <FontAwesomeIcon icon={faTwitter} />
+                  </a>
+                  <a
+                    class=" text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
+                    href="/"
+                  >
+                    <FontAwesomeIcon icon={faEthereum} />
+                  </a>
+                </div>
+              </div>
+            </div>
+            <hr class="my-6 border-blueGray-300" />
+            <div class="flex flex-wrap items-center md:justify-between justify-center">
+              <div class="w-full md:w-4/12 px-4 mx-auto text-center">
+                <div class="text-sm text-blueGray-500 font-semibold py-1">
+                  Copyright © <span id="get-current-year">2021</span>
+                  <a href="/" class="text-blueGray-500 hover:text-gray-800" target="_blank">
+                    {" "}
+                    Notus JS by
+                  </a>
+                  <a href="/" class="text-blueGray-500 hover:text-blueGray-800">
+                    Creative Tim
+                  </a>
+                  .
+                </div>
+              </div>
+            </div>
+          
+        </footer>
+
         <Modal open={loading} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
           <Box sx={style}>
             <CircularProgress />
@@ -190,6 +245,7 @@ function App() {
           </Box>
         </Modal>
       </div>
+      {/* <Footer /> */}
     </div>
   );
 }
