@@ -2,7 +2,7 @@ import { useState } from "react";
 function IncDecCounter({ noOfMint, setnoOfMint }) {
   let [num, setNum] = useState(0);
   let incNum = () => {
-    if (noOfMint < 10000) {
+    if (noOfMint < 5555) {
       setnoOfMint(Number(noOfMint) + 1);
       // setNum(Number(num) + 1);
     }
@@ -21,7 +21,7 @@ function IncDecCounter({ noOfMint, setnoOfMint }) {
       <div class="input-group">
         <div class="input-group-prepend">
           <button
-            class="p-3 px-6 pt-2 text-white btn-grad  baseline hover:bg-darkGrayishBlue"
+            class="p-3 px-6 pt-2 text-white bg-brightcolor  baseline hover:bg-brightRedLight"
             type="button"
             onClick={decNum}
           >
@@ -31,7 +31,7 @@ function IncDecCounter({ noOfMint, setnoOfMint }) {
         <input type="text" class="form-control" value={noOfMint} onChange={handleChange} />
         <div class="input-group-prepend">
           <button
-            class="p-3 px-6 pt-2 text-white btn-grad  baseline hover:bg-darkGrayishBlue"
+            class="p-3 px-6 pt-2 text-white bg-brightcolor  baseline hover:bg-brightRedLight"
             type="button"
             onClick={incNum}
           >

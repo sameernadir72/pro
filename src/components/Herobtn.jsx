@@ -3,9 +3,9 @@ const Herobtn = ({ askContractToMintNft }) => {
     <button
       onClick={askContractToMintNft}
       href="/"
-      class="p-3 px-6 pt-2 text-white btn-grad rounded-full baseline "
+      class="p-3 px-6 pt-2 text-white bg-brightcolor rounded-full baseline hover:bg-brightRedLight"
     >
-      Mint
+      Mint Nfts
     </button>
   );
 };

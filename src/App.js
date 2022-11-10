@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Footer from "./components/Footer";
 import { ethers } from "ethers";
 import abi from "./utils/abi.json";
 import { Box, Button, CircularProgress, Modal, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import "./App.css";
+
 import CancelIcon from "@mui/icons-material/Cancel";
-// import bgvideos from "./video/bgvideo.mp4";
 const style = {
   position: "absolute",
   top: "50%",
@@ -28,7 +27,7 @@ const style = {
 
 function App() {
   const [CurrentAccount, setCurrentAccount] = useState("");
-  const CONTRACT_ADDRESS = "0x100c5af0e97be44B5bc247D2c12c727340695827";
+  const CONTRACT_ADDRESS = "0x4Ee2ef0bd96cff4Fdfe4d182794C82257b60CCD9";
   const [loading, setloading] = useState(false);
   const [success, setsuccess] = useState(false);
   const [noOfMint, setnoOfMint] = useState(0);
@@ -102,16 +101,10 @@ function App() {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const priceContract = new ethers.Contract(CONTRACT_ADDRESS, abi, provider);
-        const priceHex = await priceContract.getPrice(CurrentAccount);
-
-        console.log(priceHex[0].toString());
-        const price = priceHex[0].toString() * noOfMint;
         const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
 
         let nftTxn = await connectedContract.mint(noOfMint, {
-          gasLimit: 100000,
-          value: price.toString(),
+          value: ethers.utils.parseUnits("0.01", "ether"),
         });
 
         await nftTxn.wait();
@@ -142,12 +135,7 @@ function App() {
   }, [CurrentAccount, chain]);
 
   return (
-   <div className="App">
-
-    <div className="App-1">
-      {/* <video autoplay loop muted>
-        <source src={bgvideos} type="video/mp4"></source>
-      </video> */}
+    <div className="App">
       <div className="wrapper"></div>
       <div className="container">
         <Navbar
@@ -165,7 +153,6 @@ function App() {
           setnoOfMint={setnoOfMint}
           askContractToMintNft={askContractToMintNft}
         />
-       
         <Modal open={loading} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
           <Box sx={style}>
             <CircularProgress />
@@ -203,11 +190,6 @@ function App() {
           </Box>
         </Modal>
       </div>
-    </div>
-    {/* footer */}
-    <div>
-    <Footer/>
-    </div>
     </div>
   );
 }
